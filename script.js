@@ -1,3 +1,7 @@
+window.onload = init;
+let playerScoreValue = 0;
+let computerScoreValue = 0;
+
 function computerPlay() {
     let availablePositions = ["Rock", "Paper", "Scissors"];
     return availablePositions[Math.floor(Math.random() * availablePositions.length)];
@@ -50,30 +54,112 @@ function scoreCounter(playerScore, computerScore, result) {
 
 function gameWinner(playerScore, computerScore) {
     if (playerScore >= 5) {
+        document.getElementById("winGif").style.display="block";
+        document.getElementById("resultDisplay").style.color="green";
         return "You Won !";
     } else {
+        document.getElementById("loseGif").style.display="block";
+        document.getElementById("resultDisplay").style.color="red";
         return "You Losed !";
     }
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
 
-    while (computerScore < 5 && playerScore < 5) {
-        let playerSelection = prompt("What do you play? Rock, Paper or Scissors", "Rock");
-        if (playerSelection === '' || playerSelection === null) {
-            return;
-           }
-        let computerSelection = computerPlay();
-        let result = playRound(playerSelection, computerSelection);
-        
-        let scoreBoard = scoreCounter(playerScore, computerScore, result);
-        playerScore = scoreBoard[0];
-        computerScore = scoreBoard[1];
-        console.log(result, "\n\nActual score:\nPlayer: ", playerScore,"\nComputer: ",computerScore,"\n");
+function stringToIcon(strHand) {
+    if (strHand.toLowerCase() === "rock") {
+        return "fas fa-hand-rock";
     }
-    
-    console.log(gameWinner(playerScore, computerScore), "\n")
+    if (strHand.toLowerCase() === "paper") {
+        return "fas fa-hand-paper";
+    }
+    if (strHand.toLowerCase() === "scissors") {
+        return "fas fa-hand-scissors";
+    }
+    return "fas fa-question";
 }
-game();
+
+
+function handsColoring(result) {
+    if (result.toLowerCase().includes("win")) {
+        document.getElementById("playerHand").style.color = "green";
+        document.getElementById("computerHand").style.color = "red";
+    } else if (result.toLowerCase().includes("lose")) {
+        document.getElementById("playerHand").style.color = "red";
+        document.getElementById("computerHand").style.color = "green";
+    } else {
+        document.getElementById("playerHand").style.color = "initial";
+        document.getElementById("computerHand").style.color = "initial";
+    }
+}
+
+function gameResult (playerSelection) {
+    if (computerScoreValue < 5 && playerScoreValue < 5) {
+        let computerSelection = computerPlay();
+        console.log(stringToIcon(computerSelection))
+        // display played hands
+        document.getElementById("playerHand").className = stringToIcon(playerSelection) 
+                                                        + " display-1 mx-5";
+        document.getElementById("computerHand").className = stringToIcon(computerSelection) 
+                                                        + " display-1 mx-5";
+        //play round
+        let result = playRound(playerSelection, computerSelection);
+        handsColoring(result); //Colorize hands
+        let scoreBoard = scoreCounter(playerScoreValue, computerScoreValue, result);
+        playerScoreValue = scoreBoard[0];
+        computerScoreValue = scoreBoard[1];
+        document.getElementById("playerScore").innerHTML = playerScoreValue;
+        document.getElementById("computerScore").innerHTML = computerScoreValue;
+        if (computerScoreValue >= 5 || playerScoreValue >= 5) {
+            document.getElementById("resultDisplay").innerHTML = gameWinner(playerScoreValue, computerScoreValue);
+            document.getElementById("resetGameControls").style.display="block";
+        } else {
+            document.getElementById("resultDisplay").innerHTML = result;
+        }
+    }
+}
+
+
+function gameReset(){
+    location.reload();
+}
+
+
+function init() {
+
+    document.getElementById("btnRock").addEventListener("click", function() {
+        gameResult("rock");
+      });
+    document.getElementById("btnPaper").addEventListener("click", function() {
+        gameResult("paper");
+      });
+    document.getElementById("btnScissors").addEventListener("click", function() {
+        gameResult("scissors");
+      });
+    document.getElementById("btnResetGame").addEventListener("click", function() {
+        gameReset();
+      });
+}
+
+
+// play by console
+// function game() {
+//     let playerScore = 0;
+//     let computerScore = 0;
+
+//     while (computerScore < 5 && playerScore < 5) {
+//         let playerSelection = prompt("What do you play? Rock, Paper or Scissors", "Rock");
+//         if (playerSelection === '' || playerSelection === null) {
+//             return;
+//            }
+//         let computerSelection = computerPlay();
+//         let result = playRound(playerSelection, computerSelection);
+        
+//         let scoreBoard = scoreCounter(playerScore, computerScore, result);
+//         playerScore = scoreBoard[0];
+//         computerScore = scoreBoard[1];
+//         console.log(result, "\n\nActual score:\nPlayer: ", playerScore,"\nComputer: ",computerScore,"\n");
+//     }
+    
+//     console.log(gameWinner(playerScore, computerScore), "\n")
+// }
+// game();

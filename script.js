@@ -95,7 +95,6 @@ function handsColoring(result) {
 function gameResult (playerSelection) {
     if (computerScoreValue < 5 && playerScoreValue < 5) {
         let computerSelection = computerPlay();
-        console.log(stringToIcon(computerSelection))
         // display played hands
         document.getElementById("playerHand").className = stringToIcon(playerSelection) 
                                                         + " display-1 mx-5";
